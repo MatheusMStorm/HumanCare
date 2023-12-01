@@ -1,6 +1,6 @@
 # Projeto A3 - Sistema de Registro de Consultas da HumanCare
 
-<div align="center"><img src="logo/LOGO.png" alt="HumanCare" width=250 height=250></div>
+<div align="center"><img src="logo/LOGO.PNG" alt="HumanCare" width=250 height=250></div>
 
 ## Descrição
 <p align="justify">Seja bem-vindo! Este sistema faz parte do projeto para a avaliação A3 da matéria de Modelagem de Software do ano de 2023.2. Nosso projeto consiste em uma aplicação CRUD de um sistema de registro de consultas para uma clínica fictícia chamada "HumanCare". O objetivo desta aplicação é prover de maneira simples e prática um sistema que permita a inserção, atualização e exclusão de informações sobre seus pacientes, médicos e consultas marcadas, além de ter uma consulta a eles mais facilitada.</p>
