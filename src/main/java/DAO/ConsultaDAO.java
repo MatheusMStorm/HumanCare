@@ -41,7 +41,7 @@ public class ConsultaDAO {
     public List<Consulta> consultar() throws SQLException {
         List<Consulta> listaConsultas = new ArrayList<>();
             
-            String consulta_sql = "SELECT id_consulta, nome_paciente, nome_medico, m.crm_medico, esp_medico, DATE_FORMAT(data_consulta, '%d/%m/%Y') AS data_consulta, hora_consulta FROM consulta c"
+            String consulta_sql = "SELECT id_consulta, p.id_paciente, nome_paciente, nome_medico, m.crm_medico, esp_medico, DATE_FORMAT(data_consulta, '%d/%m/%Y') AS data_consulta, hora_consulta FROM consulta c"
                                   + " INNER JOIN paciente p ON c.id_paciente = p.id_paciente"
                                   + " INNER JOIN medico m ON c.crm_medico = m.crm_medico;";
             
@@ -53,6 +53,7 @@ public class ConsultaDAO {
                 Paciente paciente = new Paciente();
                 Medico medico = new Medico();
                 
+                paciente.setId_paciente(rs.getInt("p.id_paciente"));
                 paciente.setNome_paciente(rs.getString("nome_paciente"));
                 medico.setNome_medico(rs.getString("nome_medico"));
                 medico.setCrm_medico(rs.getString("m.crm_medico"));
@@ -68,9 +69,9 @@ public class ConsultaDAO {
             }
         return listaConsultas;
     }
-    
+
     public void atualizar(Consulta consulta) throws SQLException {
-        String update = "UPDATE consulta SET id_paciente = ?, crm_medico = ?, data_consulta = ?, hora_consulta = ? WHERE id_consulta = ?'";
+        String update = "UPDATE consulta SET id_paciente = ?, crm_medico = ?, data_consulta = ?, hora_consulta = ? WHERE id_consulta = ?";
         
         try (PreparedStatement pstm = conn.prepareStatement(update)) {
             

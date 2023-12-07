@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.swing.JOptionPane;
 
 public class MedicoDAO {
     
@@ -47,7 +48,29 @@ public class MedicoDAO {
                 Medico medico = new Medico();
 
                 medico.setNome_medico(rs.getString("nome_medico"));
-                medico.setCrm_medico(rs.getString("m.crm_medico"));
+                medico.setCrm_medico(rs.getString("crm_medico"));
+                medico.setEspecialidade_medico(rs.getString("esp_medico"));
+                medico.setEmail_medico(rs.getString("email_medico"));
+                medico.setTel_medico(rs.getString("tel_medico"));
+                
+                listaMedicos.add(medico);
+            }
+        return listaMedicos;
+    }
+    
+    public List<Medico> consultarPorNome(String nomeMedico) throws SQLException {
+        List<Medico> listaMedicos = new ArrayList<>();
+            
+            String consulta_sql = "SELECT * FROM medico WHERE nome_medico LIKE '%" + nomeMedico + "%';";
+            
+            PreparedStatement pstm = conn.prepareStatement(consulta_sql);
+            ResultSet rs = pstm.executeQuery();
+            
+            while (rs.next()) {
+                Medico medico = new Medico();
+
+                medico.setNome_medico(rs.getString("nome_medico"));
+                medico.setCrm_medico(rs.getString("crm_medico"));
                 medico.setEspecialidade_medico(rs.getString("esp_medico"));
                 medico.setEmail_medico(rs.getString("email_medico"));
                 medico.setTel_medico(rs.getString("tel_medico"));
@@ -58,7 +81,7 @@ public class MedicoDAO {
     }
     
     public void atualizar(Medico medico) throws SQLException {
-        String update = "UPDATE medico SET nome_medico = ?, crm_medico = ?, esp_medico = ?, email_medico = ?, tel_medico = ? WHERE crm_medico = ?'";
+        String update = "UPDATE medico SET nome_medico = ?, crm_medico = ?, esp_medico = ?, email_medico = ?, tel_medico = ? WHERE crm_medico = ?";
         
         try (PreparedStatement pstm = conn.prepareStatement(update)) {
             
@@ -83,5 +106,28 @@ public class MedicoDAO {
             
             pstm.execute();
         }
+    }
+    
+    public boolean verificarMedico(Medico medico) throws SQLException {
+        
+        String sql = "SELECT crm_medico, nome_medico, esp_medico FROM medico WHERE nome_medico = ?;";
+        
+        try {
+            PreparedStatement pstm = conn.prepareStatement(sql);
+            pstm.setString(1, medico.getNome_medico());
+            ResultSet rs = pstm.executeQuery();
+            
+            if (rs.next()) {
+                medico.setCrm_medico(rs.getString("crm_medico"));
+                medico.setEspecialidade_medico(rs.getString("esp_medico"));
+                return true;
+            } else {
+                JOptionPane.showMessageDialog(null, "Favor cadastrar médico.");
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Não foi possível realizar a consulta.");
+        }
+        
+        return false;
     }
 }

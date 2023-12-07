@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 public class PacienteDAO {
     
@@ -63,6 +64,31 @@ public class PacienteDAO {
         return listaPacientes;
     }
     
+    public List<Paciente> consultarPorNome(String nomePaciente) throws SQLException {
+        List<Paciente> listaPacientes = new ArrayList<>();
+            
+            String consulta_sql = "SELECT * FROM paciente WHERE nome_paciente LIKE '%" + nomePaciente + "%';";
+            
+            PreparedStatement pstm = conn.prepareStatement(consulta_sql);
+            ResultSet rs = pstm.executeQuery();
+            
+            while (rs.next()) {
+                Paciente paciente = new Paciente(0, null, null, null, null, null, null);
+                
+                paciente.setId_paciente(rs.getInt("id_paciente"));
+                paciente.setNome_paciente(rs.getString("nome_paciente"));
+                paciente.setCpf_paciente(rs.getString("cpf_paciente"));
+                paciente.setEndereco_paciente(rs.getString("endereco_paciente"));
+                paciente.setConvenio_paciente(rs.getString("convenio_paciente"));
+                paciente.setTel_paciente(rs.getString("tel_paciente"));
+                paciente.setEmail_paciente(rs.getString("email_paciente"));
+                
+                listaPacientes.add(paciente);
+            }
+        return listaPacientes;
+    }
+
+    
     public void atualizar(Paciente paciente) throws SQLException {
         String update = "UPDATE paciente SET nome_paciente = ?, cpf_paciente = ?, endereco_paciente = ?, convenio_paciente = ?, tel_paciente = ?, email_paciente = ? WHERE id_paciente = ?;";
 
@@ -90,5 +116,27 @@ public class PacienteDAO {
             
             pstm.execute();
         }
+    }
+    
+    public boolean verificarPaciente(Paciente paciente) throws SQLException {
+        
+        String sql = "SELECT id_paciente, nome_paciente FROM paciente WHERE nome_paciente = ?;";
+        
+        try {
+            PreparedStatement pstm = conn.prepareStatement(sql);
+            pstm.setString(1, paciente.getNome_paciente());
+            ResultSet rs = pstm.executeQuery();
+            
+            if (rs.next()) {
+                paciente.setId_paciente(rs.getInt("id_paciente"));
+                return true;
+            } else {
+                JOptionPane.showMessageDialog(null, "Favor cadastrar paciente.");
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Não foi possível realizar a consulta.");
+        }
+        
+        return false;
     }
 }
